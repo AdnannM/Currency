@@ -2,60 +2,49 @@ package mycurrency;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import java.sql.Date;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
-
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.PDPageContentStream;
-import org.apache.pdfbox.pdmodel.font.PDFont;
-import org.apache.pdfbox.pdmodel.font.PDType1Font;
-import org.json.JSONArray;
+import org.apache.log4j.MDC;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Font;
-import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.Phrase;
-import com.itextpdf.text.pdf.PdfDocument;
+
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
-import com.itextpdf.text.pdf.codec.Base64.OutputStream;
-
-
-
 
 public class Currency {
 	
 	// URL
 	private static String url = "http://data.fixer.io/api/latest?access_key=a9768800ad38538c63d068cf5f06e769";
-	
+	private static Logger logger =  LoggerFactory.getLogger(Currency.class);
+			
     public static void main(String[] args) throws UnsupportedOperationException, IOException, DocumentException {
           	         
+    	logger.info("Hello World");
+    	logger.warn("test");
+    	logger.error("error");
+    	logger.debug("Here is a debug message");
     	
     	try (CloseableHttpClient client = HttpClientBuilder.create().build()) {
 
     	    // use httpClient (no need to close it explicitly)
-    	    
         	HttpGet request = new HttpGet(url);
         	HttpResponse response = client.execute(request);
 
@@ -86,13 +75,11 @@ public class Currency {
         		
         	 }
         	 
-        	 System.out.println(sb.toString());
-        	 
-        	 
  		    // DateTimeFormatter
              DateTimeFormatter todayDate = DateTimeFormatter.ofPattern("dd. MM yyyy"); 
              LocalDateTime now = LocalDateTime.now();  
-             System.out.println("Today Date: " + todayDate.format(now)); 
+             
+             logger.info("" + todayDate.format(now) + " | " + todayDate.format(now));
  		    
              // Create a new document
              Document doc = new Document();
@@ -127,10 +114,12 @@ public class Currency {
 	           
         	 
         	 for (Map.Entry<String, Double> entry : rateMap.entrySet()) {
-        		    System.out.println(entry.getKey() + " / " + entry.getValue());
      
         		    String key = entry.getKey();
         		    Double values = entry.getValue();
+        		    
+        		    MDC.put(key, values);
+        		    logger.info("Key: " + key + " || " + "Value: " + values);
 
                     pdfPTable.addCell("" + key);
                     pdfPTable.addCell("" + values + " " + base);
@@ -145,41 +134,9 @@ public class Currency {
 
     	} catch (IOException e) {
 
-    	    
-
    		}
     }
 }
-//class CurrencyClass{
-//  private String rates;
-//  private String base;
-//  private Date date;
-//  
-//  public String getBase() {
-//	  return base;
-//  }
-//  
-//  public String getRates() {
-//	  return rates;
-//  }
-//  
-//  public Date getDate() {
-//	  return date;
-//  }
-//}
-//
-//
-//class CurrencyWrapper {
-//	private String country;
-//	private Double rates;
-//	
-//	public String getCountry() {
-//		return country;
-//	}
-//	
-//	public Double getRates() {
-//		return rates;
-//	}
-//}
+
 
 
