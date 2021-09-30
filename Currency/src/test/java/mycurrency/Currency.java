@@ -73,6 +73,9 @@ public class Currency {
         	 JSONObject objtest = new JSONObject(sb.toString());
         
         	 JSONObject rates = objtest.getJSONObject("rates");
+        	 
+        	 String base = (String) objtest.getString("base");
+        	 
         	 Set<String> keys = rates.keySet();
         	 
         	 HashMap<String, Double> rateMap = new HashMap<String, Double>();   
@@ -86,104 +89,97 @@ public class Currency {
         	 System.out.println(sb.toString());
         	 
         	 
+ 		    // DateTimeFormatter
+             DateTimeFormatter todayDate = DateTimeFormatter.ofPattern("dd. MM yyyy"); 
+             LocalDateTime now = LocalDateTime.now();  
+             System.out.println("Today Date: " + todayDate.format(now)); 
+ 		    
+             // Create a new document
+             Document doc = new Document();
+             FileOutputStream stream = new FileOutputStream(new File("TablePDF.pdf"));
+             
+             PdfWriter.getInstance(doc, stream);
+             
+             String title = "Kursna lista za: ";
+             DateTimeFormatter timeDate = DateTimeFormatter.ofPattern("HH:mm:ss");
+            
+             doc.open();
+    
+         
+             // Create Table
+             PdfPTable pdfPTable = new PdfPTable(2);
+             PdfPTable header = new PdfPTable(2);
+             PdfPTable tableTime = new PdfPTable(1);
+             
+             // TableCell
+             PdfPCell timeCell = new PdfPCell(new Paragraph(timeDate.format(now)));
+             PdfPCell headerCell1 = new PdfPCell(new Paragraph(title));
+             PdfPCell headerCell2 = new PdfPCell(new Paragraph(todayDate.format(now)));
+             PdfPCell pdfPCell3 = new PdfPCell(new Paragraph("Country "));
+             PdfPCell pdfPCell4 = new PdfPCell(new Paragraph("Rates " ));
+             
+	    
+               tableTime.addCell(timeCell);
+               header.addCell(headerCell1);
+               header.addCell(headerCell2);
+	           pdfPTable.addCell(pdfPCell3);
+	           pdfPTable.addCell(pdfPCell4);
+	           
+        	 
         	 for (Map.Entry<String, Double> entry : rateMap.entrySet()) {
         		    System.out.println(entry.getKey() + " / " + entry.getValue());
-        		   
-        		    ArrayList<String> arList = new ArrayList<String>();
-        		    
-        		    for(Map.Entry<String, Double> map : rateMap.entrySet()){
+     
+        		    String key = entry.getKey();
+        		    Double values = entry.getValue();
 
-        		        String key = map.getKey();
-        		    	Double values = map.getValue();
-        		    	//System.out.println(key + " / " + values);
-        		  
-//        		    	arList.add(key);
-//        		    	arList.add(values);
-        		    
-        		    }
-        		    
-        		    
-        		    // DateTimeFormatter
-        		    // DateTimeFormatter
-                    DateTimeFormatter todayDate = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
-                    LocalDateTime now = LocalDateTime.now();  
-                    System.out.println("Today Date: " + todayDate.format(now)); 
-        		    
-                    // Create a new document
-                    Document doc = new Document();
-                    FileOutputStream stream = new FileOutputStream(new File("TablePDF.pdf"));
-                    
-                    PdfWriter.getInstance(doc, stream);
-                    
-                    doc.open();
-                  
-                
-                    // Create Table
-                    PdfPTable pdfPTable = new PdfPTable(3);
-                    
-                    
-                    // TableCell
-                    PdfPCell pdfPCell1 = new PdfPCell(new Paragraph("Today-Date "));
-                    PdfPCell pdfPCell2 = new PdfPCell(new Paragraph("Country "));
-                    PdfPCell pdfPCell3 = new PdfPCell(new Paragraph("Rates " ));
-            
-                                     
-                    // Add TableCell
-                    pdfPTable.addCell(pdfPCell1);
-                    pdfPTable.addCell(pdfPCell2);
-                    pdfPTable.addCell(pdfPCell3);
-                    pdfPTable.addCell(todayDate.format(now));
-                    pdfPTable.addCell(entry.getKey());
-                    pdfPTable.addCell("" + entry.getValue());
-                   
-                    
-                    
-                    
-                
-                    doc.add(pdfPTable);
-                    doc.close();
-        		
-        	 }
+                    pdfPTable.addCell("" + key);
+                    pdfPTable.addCell("" + values + " " + base);
  
+        	 }
+        	 
+        	 	doc.add(tableTime);
+        	 	doc.add(header);
+        	    doc.add(pdfPTable);
+                doc.close();
+
 
     	} catch (IOException e) {
 
-    	    // handle
+    	    
 
-    		}
-    	}
+   		}
     }
-
-class CurrencyClass{
-  private String rates;
-  private String base;
-  private Date date;
-  
-  public String getBase() {
-	  return base;
-  }
-  
-  public String getRates() {
-	  return rates;
-  }
-  
-  public Date getDate() {
-	  return date;
-  }
 }
-
-
-class CurrencyWrapper {
-	private String country;
-	private Double rates;
-	
-	public String getCountry() {
-		return country;
-	}
-	
-	public Double getRates() {
-		return rates;
-	}
-}
+//class CurrencyClass{
+//  private String rates;
+//  private String base;
+//  private Date date;
+//  
+//  public String getBase() {
+//	  return base;
+//  }
+//  
+//  public String getRates() {
+//	  return rates;
+//  }
+//  
+//  public Date getDate() {
+//	  return date;
+//  }
+//}
+//
+//
+//class CurrencyWrapper {
+//	private String country;
+//	private Double rates;
+//	
+//	public String getCountry() {
+//		return country;
+//	}
+//	
+//	public Double getRates() {
+//		return rates;
+//	}
+//}
 
 
