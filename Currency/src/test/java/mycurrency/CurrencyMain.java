@@ -51,6 +51,7 @@ public class CurrencyMain {
 
 		try {
 
+			
 			LOG.info(URL);
 			// use httpClient (no need to close it explicitly)
 			String apiResponse = getCurrencyRateAPIResponse();
@@ -68,6 +69,13 @@ public class CurrencyMain {
 		}
 	}
 
+	/***
+	 * This method take URL and get JSON response
+	 * 
+	 * @return Response 
+	 * @throws ClientProtocolException
+	 * @throws IOException
+	 */
 	private static String getCurrencyRateAPIResponse() throws ClientProtocolException, IOException {
 
 		StringBuilder sb = new StringBuilder();
@@ -207,10 +215,6 @@ public class CurrencyMain {
 				doc.add(headerTable);
 				doc.add(countryRateTable);
 				doc.add(pdfPTable);
-				
-				
-				
-				
 				doc.close();
 	}
 }
