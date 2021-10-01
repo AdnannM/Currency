@@ -51,6 +51,7 @@ public class CurrencyMain {
 
 		try {
 
+			LOG.info(URL);
 			// use httpClient (no need to close it explicitly)
 			String apiResponse = getCurrencyRateAPIResponse();
 			JSONObject jsonAPIResponseJsonObject = new JSONObject(apiResponse);
@@ -119,6 +120,13 @@ public class CurrencyMain {
 		return rateMap;
 	}
 
+	/***
+	 * This method create new pdfFile with Table
+	 * 
+	 * @param rateMap
+	 * @throws FileNotFoundException
+	 * @throws DocumentException
+	 */
 	private static void createNewPdfFileWithTable(HashMap<String, Double> rateMap) throws FileNotFoundException, DocumentException {
 		
 		try {
@@ -135,16 +143,22 @@ public class CurrencyMain {
 		// Create Table
 		PdfPTable pdfPTable = new PdfPTable(2);
 		
+	
 		takeAllItemFromJSON(rateMap, pdfPTable);
-		
+
 		configureCell(pdfPTable);
-		
-		
 		
 	}
 	
+	/***
+	 * This method take all JSON date
+	 * 
+	 * @param reateMap
+	 * @param pdfPTable
+	 */
 	private static void takeAllItemFromJSON(HashMap<String, Double> reateMap, PdfPTable pdfPTable) {
 		
+	
 		for (Map.Entry<String, Double> entry : reateMap.entrySet()) {
 
 			String key = entry.getKey();
@@ -155,14 +169,24 @@ public class CurrencyMain {
 
 			pdfPTable.addCell("" + key);
 			pdfPTable.addCell("" + values + " ");
+			
+			
 
 		}
+		
 	}
 	
+	/***
+	 * This method configure cell for table
+	 * 
+	 * @param pdfPTable
+	 * @throws DocumentException
+	 */
 	private static void configureCell(PdfPTable pdfPTable) throws DocumentException {
 				// TableCell
 				PdfPTable timeTable = new PdfPTable(1);
 				PdfPTable headerTable = new PdfPTable(2);
+				PdfPTable countryRateTable = new PdfPTable(2);
 				
 				PdfPCell titleCell = new PdfPCell(new Paragraph("" + title));
 				PdfPCell timeCell = new PdfPCell(new Paragraph(shorDateTimeFormatter.format(now)));
@@ -174,13 +198,19 @@ public class CurrencyMain {
 				timeTable.addCell(timeCell);
 				headerTable.addCell(titleCell);
 				headerTable.addCell(dateCell);
-				pdfPTable.addCell(countryCell);
-				pdfPTable.addCell(ratesCell);
+				countryRateTable.addCell(countryCell);
+				countryRateTable.addCell(ratesCell);
 			
 
+				
 				doc.add(timeTable);
 				doc.add(headerTable);
+				doc.add(countryRateTable);
 				doc.add(pdfPTable);
+				
+				
+				
+				
 				doc.close();
 	}
 }
